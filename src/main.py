@@ -1,5 +1,5 @@
 
-import os, zipfile, shutil
+import os, shutil
 import supervisely as sly
 from supervisely.io.fs import get_file_ext, get_file_name_with_ext
 from supervisely.io.json import load_json_file
@@ -8,20 +8,16 @@ import sly_globals as g
 
 
 def prepare_ann_data(ann_path):
-
     ann_json = load_json_file(ann_path)
-
     for curr_data in ann_json.values():
         polygons = []
         for region in curr_data['regions']:
             polygons.append(region['shape_attributes'])
-
         g.image_name_to_polygon[curr_data['filename']] = polygons
 
 
 def create_ann(img_path):
     labels = []
-
     im = read(img_path)
     width = im.shape[1]
     height = im.shape[0]
@@ -39,15 +35,6 @@ def create_ann(img_path):
         labels.append(label)
 
     return sly.Annotation(img_size=(height, width), labels=labels)
-
-
-# def extract_zip(archive_path):
-#     if zipfile.is_zipfile(archive_path):
-#         with zipfile.ZipFile(archive_path, 'r') as archive:
-#             archive.extractall(g.work_dir_path)
-#     else:
-#         g.logger.warn('Archive cannot be unpacked {}'.format(get_file_name(archive_path)))
-#         g.my_app.stop()
 
 
 @g.my_app.callback("import_tomato_detection")
@@ -69,7 +56,7 @@ def import_tomato_detection(api: sly.Api, task_id, context, state, app_logger):
 
         ds_name = arch_name.split('-')[0]
         if ds_name not in [g.train_folder_name, g.val_folder_name]:
-            g.logger.warn('Folder name is {} but it should be \'train\' or \'val\', check your input data'.format(ds_name))
+            g.logger.warn('Folder name in archive {} is not \'train\' or \'val\', check your input data'.format(arch_name))
             g.my_app.stop()
 
         new_dataset = api.dataset.create(new_project.id, ds_name, change_name_if_conflict=True)

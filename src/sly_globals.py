@@ -21,10 +21,13 @@ logger = sly.logger
 ds_path = os.environ.get('modal.state.dsPath')
 
 if not ds_path:
-    logger.warn('Path to tar file in Team Files is empty, check your input data')
+    logger.warn('Path to folder in Team Files is empty, check your input data')
     my_app.stop()
 else:
     files = api.file.list2(TEAM_ID, ds_path)
+    if len(files) == 0:
+        logger.warn('Folder {} in Team Files is empty or not exist, check your input data'.format(ds_path))
+        my_app.stop()
 
 project_name = 'small_tomato'
 work_dir = 'tomato_data'
