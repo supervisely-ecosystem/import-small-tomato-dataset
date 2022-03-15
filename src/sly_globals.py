@@ -19,11 +19,12 @@ WORKSPACE_ID = int(os.environ['context.workspaceId'])
 logger = sly.logger
 
 ds_path = os.environ.get('modal.state.dsPath')
+
 if not ds_path:
     logger.warn('Path to tar file in Team Files is empty, check your input data')
     my_app.stop()
 else:
-    ARH_NAMES = os.listdir(ds_path)
+    files = api.file.list2(TEAM_ID, ds_path)
 
 project_name = 'small_tomato'
 work_dir = 'tomato_data'
@@ -49,4 +50,3 @@ meta = sly.ProjectMeta(obj_classes=obj_class_collection)
 storage_dir = my_app.data_dir
 work_dir_path = os.path.join(storage_dir, work_dir)
 sly.io.fs.mkdir(work_dir_path)
-

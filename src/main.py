@@ -57,16 +57,17 @@ def import_tomato_detection(api: sly.Api, task_id, context, state, app_logger):
     new_project = api.project.create(g.WORKSPACE_ID, g.project_name, change_name_if_conflict=True)
     api.project.update_meta(new_project.id, g.meta.to_json())
 
-    for ARH_NAME in g.ARH_NAMES:
-        archive_path = os.path.join(g.work_dir_path, ARH_NAME)
-        api.file.download(g.TEAM_ID, g.ds_path, archive_path)
+    for file in g.files:
+        arch_name = file.name
+        archive_path = os.path.join(g.work_dir_path, arch_name)
+        api.file.download(g.TEAM_ID, file.path, archive_path)
 
         try:
             shutil.unpack_archive(archive_path, g.work_dir_path)
-        except Exception('Unknown archive format {}'.format(ARH_NAME)):
+        except Exception('Unknown archive format {}'.format(arch_name)):
             g.my_app.stop()
 
-        ds_name = ARH_NAME.split('-')[0]
+        ds_name = arch_name.split('-')[0]
         if ds_name not in [g.train_folder_name, g.val_folder_name]:
             g.logger.warn('Folder name is {} but it should be \'train\' or \'val\', check your input data'.format(ds_name))
             g.my_app.stop()
