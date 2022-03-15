@@ -1,16 +1,16 @@
 {
-  "name": "Import tomato detection dataset",
+  "name": "Import small tomato dataset",
   "type": "app",
   "categories": [
     "Images"
   ],
-  "description": "Import tomato detection dataset",
+  "description": "Import small tomato dataset",
   "docker_image": "supervisely/base-py-sdk:6",
   "main_script": "src/main.py",
   "modal_template": "src/modal.html",
   "task_location": "workspace_tasks",
   "isolate": true,
   "headless": true,
-  "icon": "https://i.imgur.com/c1aqaIb.png",
+  "icon": "https://i.imgur.com/z5pqXro.png",
   "icon_background": "#FFFFFF"
 }
